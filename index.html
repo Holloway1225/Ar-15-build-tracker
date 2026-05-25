@@ -115,8 +115,14 @@
 
   .url-cell { display: flex; gap: 6px; align-items: center; }
   .url-cell input { flex: 1; min-width: 0; }
-  .link-btn { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: color 0.15s; line-height: 1; }
-  .link-btn:hover { color: var(--accent); }
+  .link-btn {
+    display: flex; align-items: center; justify-content: center;
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 4px;
+    color: var(--accent-dim); text-decoration: none; font-size: 1rem;
+    flex-shrink: 0; transition: background 0.15s, color 0.15s, border-color 0.15s;
+    width: 36px; height: 34px; line-height: 1;
+  }
+  .link-btn:hover, .link-btn:active { background: var(--accent); color: #0d0f0e; border-color: var(--accent); }
 
   .optional-badge {
     font-family: 'Share Tech Mono', monospace;
@@ -426,8 +432,10 @@ function renderPartRow(catId, p) {
       </div>
       <div class="url-cell">
         <input type="url" placeholder="https://..." value="${esc(p.url)}"
-          oninput="updatePart(${catId},${p.id},'url',this.value)" />
-        ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener" class="link-btn">↗</a>` : '<span style="width:16px"></span>'}
+          oninput="updatePart(${catId},${p.id},'url',this.value); updateLinkBtn(this, ${p.id})" />
+        ${p.url
+          ? `<a href="${esc(p.url)}" target="_blank" rel="noopener" class="link-btn" title="Open link">↗</a>`
+          : `<span class="link-btn" style="opacity:0.25;cursor:default;" title="Add a URL first">↗</span>`}
       </div>
       <span class="optional-badge ${p.optional ? '' : 'req'}">${p.optional ? 'OPT' : ''}</span>
       <div class="check-wrap">
@@ -455,6 +463,17 @@ function updateStats() {
   document.getElementById('remainCost').textContent = fmt(total - spent);
   document.getElementById('partsCount').textContent = partCount;
   document.getElementById('purchasedCount').textContent = purchased;
+}
+
+function updateLinkBtn(input, partId) {
+  const btn = input.parentElement.querySelector('.link-btn');
+  if (!btn) return;
+  const url = input.value.trim();
+  if (url) {
+    btn.outerHTML = `<a href="${esc(url)}" target="_blank" rel="noopener" class="link-btn" title="Open link">↗</a>`;
+  } else {
+    btn.outerHTML = `<span class="link-btn" style="opacity:0.25;cursor:default;" title="Add a URL first">↗</span>`;
+  }
 }
 
 function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
