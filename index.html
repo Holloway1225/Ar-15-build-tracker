@@ -18,534 +18,453 @@
     --text: #e8ede9;
     --text-dim: #7a8a7b;
     --purchased: #1e2e1f;
+    --cat-header: #111411;
   }
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; min-height: 100vh; padding: 0 0 80px; }
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    min-height: 100vh;
-    padding: 0 0 80px;
-  }
-
-  /* ── HEADER ── */
   header {
     background: linear-gradient(180deg, #0a0c0b 0%, var(--bg) 100%);
     border-bottom: 1px solid var(--border);
     padding: 28px 24px 20px;
-    position: relative;
-    overflow: hidden;
+    position: relative; overflow: hidden;
   }
   header::before {
     content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      90deg,
-      transparent,
-      transparent 40px,
-      rgba(200,240,96,0.03) 40px,
-      rgba(200,240,96,0.03) 41px
-    );
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(200,240,96,0.03) 40px, rgba(200,240,96,0.03) 41px);
     pointer-events: none;
   }
-  .header-inner { position: relative; max-width: 860px; margin: 0 auto; }
+  .header-inner { position: relative; max-width: 920px; margin: 0 auto; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 8vw, 3.8rem); letter-spacing: 0.06em; color: var(--accent); line-height: 1; text-shadow: 0 0 40px rgba(200,240,96,0.25); }
+  .subtitle { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-dim); letter-spacing: 0.18em; text-transform: uppercase; margin-top: 4px; }
 
-  h1 {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2.2rem, 8vw, 3.8rem);
-    letter-spacing: 0.06em;
-    color: var(--accent);
-    line-height: 1;
-    text-shadow: 0 0 40px rgba(200,240,96,0.25);
-  }
-  .subtitle {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.7rem;
-    color: var(--text-dim);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
+  main { max-width: 920px; margin: 0 auto; padding: 24px 16px; }
 
-  /* ── MAIN ── */
-  main { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
-
-  /* ── BUILD META ── */
-  .build-meta {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 28px;
-  }
+  .build-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
   @media (max-width: 500px) { .build-meta { grid-template-columns: 1fr; } }
-
   .field-group { display: flex; flex-direction: column; gap: 6px; }
-  label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--text-dim);
+  label.field-label { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-dim); }
+  input[type="text"], input[type="url"], input[type="number"] {
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 4px;
+    color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.9rem;
+    padding: 10px 12px; outline: none; transition: border-color 0.15s; width: 100%;
   }
-  input[type="text"], input[type="url"], input[type="number"], select {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    padding: 10px 12px;
-    outline: none;
-    transition: border-color 0.15s;
-    width: 100%;
-  }
-  input:focus, select:focus { border-color: var(--accent-dim); }
+  input:focus { border-color: var(--accent-dim); }
   input::placeholder { color: var(--text-dim); }
 
-  /* ── SECTION HEADER ── */
-  .section-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 0.08em;
-    color: var(--text);
-  }
-
-  /* ── STATS BAR ── */
   .stats-bar {
-    display: flex;
-    gap: 20px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px 16px;
-    margin-bottom: 20px;
-    flex-wrap: wrap;
+    display: flex; gap: 20px; flex-wrap: wrap;
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 6px; padding: 12px 16px; margin-bottom: 24px;
   }
   .stat { display: flex; flex-direction: column; gap: 2px; }
-  .stat-label {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    color: var(--text-dim);
-    text-transform: uppercase;
-  }
-  .stat-value {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1rem;
-    color: var(--accent);
-  }
+  .stat-label { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; color: var(--text-dim); text-transform: uppercase; }
+  .stat-value { font-family: 'Share Tech Mono', monospace; font-size: 1rem; color: var(--accent); }
   .stat-value.dim { color: var(--text-dim); }
 
-  /* ── PARTS TABLE ── */
-  .parts-list { display: flex; flex-direction: column; gap: 8px; }
+  /* CATEGORY BLOCK */
+  .category-block { margin-bottom: 10px; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .cat-header {
+    background: var(--cat-header);
+    padding: 10px 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    cursor: pointer; user-select: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .cat-header:hover { background: #161a16; }
+  .cat-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.1em; color: var(--accent-dim); }
+  .cat-meta { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--text-dim); display: flex; gap: 16px; align-items: center; }
+  .cat-toggle { color: var(--text-dim); font-size: 0.8rem; transition: transform 0.2s; }
+  .cat-toggle.open { transform: rotate(180deg); }
 
+  .cat-body { padding: 8px; display: flex; flex-direction: column; gap: 6px; }
+  .cat-body.collapsed { display: none; }
+
+  /* COL HEADERS */
+  .col-headers { display: grid; grid-template-columns: 2.5fr 90px 2fr 60px 28px 28px; gap: 8px; padding: 4px 8px 2px; }
+  .col-headers span { font-family: 'Share Tech Mono', monospace; font-size: 0.58rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text-dim); }
+  @media (max-width: 620px) { .col-headers { display: none; } }
+
+  /* PART ROW */
   .part-row {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px 14px;
+    border-radius: 5px;
+    padding: 8px 8px;
     display: grid;
-    grid-template-columns: 2fr 1fr 2fr auto auto;
-    gap: 10px;
+    grid-template-columns: 2.5fr 90px 2fr 60px 28px 28px;
+    gap: 8px;
     align-items: center;
     transition: background 0.2s, border-color 0.2s;
-    animation: fadeIn 0.2s ease;
+    animation: fadeIn 0.18s ease;
   }
-  .part-row.purchased {
-    background: var(--purchased);
-    border-color: var(--accent-dim);
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .part-row.purchased { background: var(--purchased); border-color: var(--accent-dim); }
+  .part-row.optional { opacity: 0.75; }
+  .part-row.optional .part-name-input { font-style: italic; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
 
-  .part-row input[type="text"],
-  .part-row input[type="url"],
-  .part-row input[type="number"] {
-    background: var(--surface2);
-    font-size: 0.82rem;
-    padding: 8px 10px;
+  .part-row input[type="text"], .part-row input[type="url"], .part-row input[type="number"] {
+    font-size: 0.82rem; padding: 7px 9px;
   }
-  .part-row.purchased input {
-    background: #1a2a1b;
-    border-color: #3a5a3b;
-  }
+  .part-row.purchased input { background: #1a2a1b; border-color: #3a5a3b; }
 
-  .cost-input { max-width: 100px; }
-
-  /* cost prefix wrapper */
   .cost-wrap { position: relative; }
-  .cost-wrap .prefix {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--text-dim);
-    font-size: 0.82rem;
-    pointer-events: none;
-    font-family: 'Share Tech Mono', monospace;
-  }
-  .cost-wrap input { padding-left: 22px !important; }
+  .cost-wrap .prefix { position: absolute; left: 9px; top: 50%; transform: translateY(-50%); color: var(--text-dim); font-size: 0.8rem; pointer-events: none; font-family: 'Share Tech Mono', monospace; }
+  .cost-wrap input { padding-left: 20px !important; }
 
-  /* purchased checkbox */
-  .check-wrap {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .check-wrap input[type="checkbox"] { display: none; }
-  .check-wrap label {
-    width: 28px;
-    height: 28px;
-    border: 2px solid var(--border);
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.15s, background 0.15s;
-    font-size: 0; /* hide text */
-  }
-  .check-wrap input[type="checkbox"]:checked + label {
-    border-color: var(--accent);
-    background: var(--accent);
-  }
-  .check-wrap input[type="checkbox"]:checked + label::after {
-    content: '✓';
-    color: #0d0f0e;
-    font-size: 0.9rem;
-    font-weight: 700;
-  }
-
-  /* delete btn */
-  .del-btn {
-    background: none;
-    border: 1px solid transparent;
-    border-radius: 4px;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-size: 1rem;
-    width: 28px;
-    height: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.15s, color 0.15s;
-    flex-shrink: 0;
-  }
-  .del-btn:hover { border-color: var(--danger); color: var(--danger); }
-
-  /* link icon */
-  .link-btn {
-    background: none;
-    border: none;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-size: 0.85rem;
-    padding: 0;
-    transition: color 0.15s;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-  }
+  .url-cell { display: flex; gap: 6px; align-items: center; }
+  .url-cell input { flex: 1; min-width: 0; }
+  .link-btn { color: var(--text-dim); text-decoration: none; font-size: 0.85rem; flex-shrink: 0; transition: color 0.15s; line-height: 1; }
   .link-btn:hover { color: var(--accent); }
 
+  .optional-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.12em;
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 1px 4px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    align-self: center;
+    justify-self: center;
+  }
+  .optional-badge.req { border-color: transparent; color: transparent; }
+
+  .check-wrap { display: flex; align-items: center; justify-content: center; }
+  .check-wrap input[type="checkbox"] { display: none; }
+  .check-wrap label { width: 26px; height: 26px; border: 2px solid var(--border); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s; }
+  .check-wrap input[type="checkbox"]:checked + label { border-color: var(--accent); background: var(--accent); }
+  .check-wrap input[type="checkbox"]:checked + label::after { content: '✓'; color: #0d0f0e; font-size: 0.85rem; font-weight: 700; }
+
+  .del-btn { background: none; border: 1px solid transparent; border-radius: 4px; color: var(--text-dim); cursor: pointer; font-size: 0.9rem; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, color 0.15s; flex-shrink: 0; padding: 0; }
+  .del-btn:hover { border-color: var(--danger); color: var(--danger); }
+
   @media (max-width: 620px) {
-    .part-row {
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto auto auto;
-    }
-    .part-row .name-field { grid-column: 1 / -1; }
-    .part-row .url-wrap { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; }
-    .part-row .url-wrap input { flex: 1; }
+    .part-row { grid-template-columns: 1fr 80px 26px 26px; grid-template-rows: auto auto; row-gap: 6px; }
+    .part-row .url-cell { grid-column: 1 / 3; }
+    .optional-badge { display: none; }
   }
 
-  /* ── ADD BUTTON ── */
-  .add-btn {
-    width: 100%;
-    margin-top: 10px;
-    background: none;
-    border: 1px dashed var(--border);
-    border-radius: 6px;
-    color: var(--text-dim);
-    cursor: pointer;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.18em;
-    padding: 13px;
-    text-transform: uppercase;
+  .add-custom-btn {
+    width: 100%; margin-top: 4px;
+    background: none; border: 1px dashed var(--border); border-radius: 5px;
+    color: var(--text-dim); cursor: pointer;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.18em; padding: 9px; text-transform: uppercase;
     transition: border-color 0.15s, color 0.15s;
   }
-  .add-btn:hover { border-color: var(--accent-dim); color: var(--accent); }
+  .add-custom-btn:hover { border-color: var(--accent-dim); color: var(--accent); }
 
-  /* ── NOTES ── */
-  .notes-area {
-    margin-top: 28px;
-  }
-  textarea {
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    color: var(--text);
-    font-family: 'Inter', sans-serif;
-    font-size: 0.85rem;
-    line-height: 1.6;
-    outline: none;
-    padding: 12px 14px;
-    resize: vertical;
-    transition: border-color 0.15s;
-    width: 100%;
-    min-height: 90px;
-  }
+  .notes-area { margin-top: 28px; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 0.08em; color: var(--text); margin-bottom: 8px; }
+  textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.85rem; line-height: 1.6; outline: none; padding: 12px 14px; resize: vertical; transition: border-color 0.15s; width: 100%; min-height: 90px; }
   textarea:focus { border-color: var(--accent-dim); }
   textarea::placeholder { color: var(--text-dim); }
-
-  /* ── EMPTY STATE ── */
-  .empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    color: var(--text-dim);
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    border: 1px dashed var(--border);
-    border-radius: 6px;
-  }
-
-  /* ── COL HEADERS ── */
-  .col-headers {
-    display: grid;
-    grid-template-columns: 2fr 1fr 2fr auto auto;
-    gap: 10px;
-    padding: 0 14px;
-    margin-bottom: 6px;
-  }
-  .col-headers span {
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-  }
-  @media (max-width: 620px) { .col-headers { display: none; } }
 </style>
 </head>
 <body>
-
 <header>
   <div class="header-inner">
     <h1>AR-15 Build Tracker</h1>
     <div class="subtitle">// Part-by-part build planner</div>
   </div>
 </header>
-
 <main>
 
-  <!-- BUILD META -->
   <div class="build-meta">
     <div class="field-group">
-      <label for="buildName">Build Name</label>
+      <label class="field-label" for="buildName">Build Name</label>
       <input type="text" id="buildName" placeholder="e.g. Home Defense Build" />
     </div>
     <div class="field-group">
-      <label for="caliber">Caliber</label>
-      <input type="text" id="caliber" placeholder="e.g. 5.56 NATO, .300 BLK" />
+      <label class="field-label" for="caliber">Caliber</label>
+      <input type="text" id="caliber" placeholder="e.g. 5.56 NATO, .300 BLK, 6.5 Grendel" />
     </div>
   </div>
 
-  <!-- STATS -->
   <div class="stats-bar">
-    <div class="stat">
-      <span class="stat-label">Total Cost</span>
-      <span class="stat-value" id="totalCost">$0.00</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Spent</span>
-      <span class="stat-value" id="spentCost">$0.00</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Remaining</span>
-      <span class="stat-value dim" id="remainCost">$0.00</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Parts</span>
-      <span class="stat-value" id="partsCount">0</span>
-    </div>
-    <div class="stat">
-      <span class="stat-label">Purchased</span>
-      <span class="stat-value" id="purchasedCount">0</span>
-    </div>
+    <div class="stat"><span class="stat-label">Total Cost</span><span class="stat-value" id="totalCost">$0.00</span></div>
+    <div class="stat"><span class="stat-label">Spent</span><span class="stat-value" id="spentCost">$0.00</span></div>
+    <div class="stat"><span class="stat-label">Remaining</span><span class="stat-value dim" id="remainCost">$0.00</span></div>
+    <div class="stat"><span class="stat-label">Parts</span><span class="stat-value" id="partsCount">0</span></div>
+    <div class="stat"><span class="stat-label">Purchased</span><span class="stat-value" id="purchasedCount">0</span></div>
   </div>
 
-  <!-- PARTS LIST -->
-  <div class="section-header">
-    <span class="section-title">Parts List</span>
-  </div>
+  <div id="categoriesContainer"></div>
 
-  <div class="col-headers">
-    <span>Part Name</span>
-    <span>Cost</span>
-    <span>Website / Source</span>
-    <span style="text-align:center">Got it</span>
-    <span></span>
-  </div>
-
-  <div class="parts-list" id="partsList"></div>
-
-  <button class="add-btn" onclick="addPart()">+ Add Part</button>
-
-  <!-- NOTES -->
   <div class="notes-area">
-    <div class="section-header" style="margin-bottom:8px;">
-      <span class="section-title">Notes</span>
-    </div>
-    <textarea id="buildNotes" placeholder="Build notes, specs, FFL info, etc..."></textarea>
+    <div class="section-title">Notes</div>
+    <textarea id="buildNotes" placeholder="Build notes, specs, FFL info, ammo preferences, etc..."></textarea>
   </div>
 
 </main>
 
 <script>
-  // ── STATE ──────────────────────────────────────────────
-  let parts = [];
-  let nextId = 1;
-
-  // ── LOAD FROM LOCALSTORAGE ─────────────────────────────
-  function load() {
-    try {
-      const saved = localStorage.getItem('ar15_build');
-      if (saved) {
-        const data = JSON.parse(saved);
-        document.getElementById('buildName').value = data.buildName || '';
-        document.getElementById('caliber').value = data.caliber || '';
-        document.getElementById('buildNotes').value = data.notes || '';
-        parts = data.parts || [];
-        nextId = data.nextId || 1;
-      }
-    } catch(e) {}
-    renderAll();
+// ── DEFAULT PARTS TEMPLATE ──────────────────────────────────────────────────
+const TEMPLATE = [
+  {
+    cat: "Lower Receiver Group",
+    parts: [
+      { name: "Stripped Lower Receiver", optional: false },
+      { name: "Lower Parts Kit (LPK)", optional: false },
+      { name: "Stock / Brace", optional: false },
+      { name: "Buffer Tube (Receiver Extension)", optional: false },
+      { name: "Buffer", optional: false },
+      { name: "Buffer Spring (Recoil Spring)", optional: false },
+      { name: "Pistol Grip", optional: false },
+      { name: "Trigger Group (if not in LPK)", optional: true },
+      { name: "Drop-In Trigger (Aftermarket)", optional: true },
+    ]
+  },
+  {
+    cat: "Upper Receiver Group",
+    parts: [
+      { name: "Stripped Upper Receiver", optional: false },
+      { name: "Forward Assist Assembly", optional: false },
+      { name: "Dust Cover / Ejection Port Cover", optional: false },
+      { name: "Barrel", optional: false },
+      { name: "Barrel Nut", optional: false },
+      { name: "Gas Block", optional: false },
+      { name: "Gas Tube", optional: false },
+      { name: "Handguard / Rail System", optional: false },
+      { name: "Handguard End Cap / Delta Ring (if mil-spec)", optional: true },
+      { name: "Muzzle Device (Flash Hider / Comp / Brake)", optional: false },
+      { name: "Crush Washer or Shim Set", optional: false },
+    ]
+  },
+  {
+    cat: "Bolt Carrier Group",
+    parts: [
+      { name: "Bolt Carrier Group (BCG)", optional: false },
+      { name: "Charging Handle", optional: false },
+    ]
+  },
+  {
+    cat: "Optics & Sights",
+    parts: [
+      { name: "Iron Sights (Front)", optional: true },
+      { name: "Iron Sights (Rear)", optional: true },
+      { name: "Optic / Scope / Red Dot", optional: true },
+      { name: "Optic Mount / Rings", optional: true },
+      { name: "Magnifier", optional: true },
+      { name: "Magnifier Mount / Flip-to-Side", optional: true },
+    ]
+  },
+  {
+    cat: "Accessories & Upgrades",
+    parts: [
+      { name: "Magazine (x1)", optional: false },
+      { name: "Vertical Grip / Angled Foregrip", optional: true },
+      { name: "Bipod", optional: true },
+      { name: "Sling", optional: true },
+      { name: "Sling Mount / QD Swivel", optional: true },
+      { name: "Light / Weapon Light", optional: true },
+      { name: "Light Mount", optional: true },
+      { name: "Laser / IR Device", optional: true },
+      { name: "Suppressor / Silencer", optional: true },
+      { name: "Suppressor Mount / Adapter", optional: true },
+    ]
+  },
+  {
+    cat: "Tools & Consumables",
+    parts: [
+      { name: "Armorers Wrench", optional: true },
+      { name: "Torque Wrench", optional: true },
+      { name: "Roll Pin Punch Set", optional: true },
+      { name: "Upper Vise Block", optional: true },
+      { name: "Lower Vise Block", optional: true },
+      { name: "Blue Loctite", optional: true },
+      { name: "Grease / Lubricant (CLP, etc.)", optional: true },
+    ]
   }
+];
 
-  // ── SAVE TO LOCALSTORAGE ───────────────────────────────
-  function save() {
-    const data = {
-      buildName: document.getElementById('buildName').value,
-      caliber: document.getElementById('caliber').value,
-      notes: document.getElementById('buildNotes').value,
-      parts,
-      nextId
-    };
-    localStorage.setItem('ar15_build', JSON.stringify(data));
-  }
+// ── STATE ───────────────────────────────────────────────────────────────────
+let state = { buildName: '', caliber: '', notes: '', categories: [] };
+let nextId = 1;
 
-  // ── ADD PART ───────────────────────────────────────────
-  function addPart() {
-    parts.push({ id: nextId++, name: '', cost: '', url: '', purchased: false });
-    renderAll();
-    save();
-    // focus the new name field
-    setTimeout(() => {
-      const rows = document.querySelectorAll('.part-name-input');
-      if (rows.length) rows[rows.length - 1].focus();
-    }, 50);
-  }
+function genId() { return nextId++; }
 
-  // ── DELETE PART ────────────────────────────────────────
-  function deletePart(id) {
-    parts = parts.filter(p => p.id !== id);
-    renderAll();
-    save();
-  }
+function initFromTemplate() {
+  state.categories = TEMPLATE.map(cat => ({
+    id: genId(),
+    name: cat.cat,
+    collapsed: false,
+    parts: cat.parts.map(p => ({
+      id: genId(),
+      name: p.name,
+      cost: '',
+      url: '',
+      purchased: false,
+      optional: p.optional
+    }))
+  }));
+}
 
-  // ── UPDATE PART ────────────────────────────────────────
-  function updatePart(id, field, value) {
-    const p = parts.find(p => p.id === id);
-    if (p) p[field] = value;
-    if (field === 'purchased') renderAll(); // re-render for row class
-    updateStats();
-    save();
-  }
+// ── STORAGE ─────────────────────────────────────────────────────────────────
+function save() {
+  state.buildName = document.getElementById('buildName').value;
+  state.caliber = document.getElementById('caliber').value;
+  state.notes = document.getElementById('buildNotes').value;
+  localStorage.setItem('ar15_v2', JSON.stringify({ state, nextId }));
+}
 
-  // ── RENDER ALL ─────────────────────────────────────────
-  function renderAll() {
-    const list = document.getElementById('partsList');
-    list.innerHTML = '';
-
-    if (parts.length === 0) {
-      list.innerHTML = '<div class="empty-state">No parts yet. Hit "+ Add Part" to start your build.</div>';
-      updateStats();
-      return;
+function load() {
+  try {
+    const raw = localStorage.getItem('ar15_v2');
+    if (raw) {
+      const d = JSON.parse(raw);
+      state = d.state;
+      nextId = d.nextId || 1;
+      document.getElementById('buildName').value = state.buildName || '';
+      document.getElementById('caliber').value = state.caliber || '';
+      document.getElementById('buildNotes').value = state.notes || '';
+    } else {
+      initFromTemplate();
     }
+  } catch(e) { initFromTemplate(); }
+  render();
+  updateStats();
+}
 
-    parts.forEach(p => {
-      const row = document.createElement('div');
-      row.className = 'part-row' + (p.purchased ? ' purchased' : '');
-      row.dataset.id = p.id;
+// ── MUTATIONS ────────────────────────────────────────────────────────────────
+function toggleCat(catId) {
+  const cat = state.categories.find(c => c.id === catId);
+  if (cat) cat.collapsed = !cat.collapsed;
+  save();
+  render();
+}
 
-      row.innerHTML = `
-        <input class="part-name-input" type="text" placeholder="Part name (e.g. Lower Receiver)" value="${esc(p.name)}"
-          onchange="updatePart(${p.id},'name',this.value)" oninput="updatePart(${p.id},'name',this.value)" />
-
-        <div class="cost-wrap">
-          <span class="prefix">$</span>
-          <input type="number" min="0" step="0.01" placeholder="0.00" value="${esc(p.cost)}"
-            onchange="updatePart(${p.id},'cost',this.value)" oninput="updatePart(${p.id},'cost',this.value)" />
-        </div>
-
-        <div class="url-wrap" style="display:flex;gap:8px;align-items:center;">
-          <input type="url" placeholder="https://..." value="${esc(p.url)}"
-            onchange="updatePart(${p.id},'url',this.value)" oninput="updatePart(${p.id},'url',this.value)"
-            style="flex:1;" />
-          ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener" class="link-btn" title="Open link">↗</a>` : '<span style="width:20px"></span>'}
-        </div>
-
-        <div class="check-wrap">
-          <input type="checkbox" id="chk${p.id}" ${p.purchased ? 'checked' : ''}
-            onchange="updatePart(${p.id},'purchased',this.checked)" />
-          <label for="chk${p.id}"></label>
-        </div>
-
-        <button class="del-btn" onclick="deletePart(${p.id})" title="Remove part">✕</button>
-      `;
-
-      list.appendChild(row);
-    });
-
-    updateStats();
+function updatePart(catId, partId, field, value) {
+  const cat = state.categories.find(c => c.id === catId);
+  if (!cat) return;
+  const part = cat.parts.find(p => p.id === partId);
+  if (!part) return;
+  part[field] = value;
+  if (field === 'purchased') {
+    const row = document.querySelector(`.part-row[data-pid="${partId}"]`);
+    if (row) {
+      row.classList.toggle('purchased', value);
+    }
   }
+  updateStats();
+  save();
+}
 
-  // ── STATS ──────────────────────────────────────────────
-  function updateStats() {
-    let total = 0, spent = 0, purchased = 0;
-    parts.forEach(p => {
+function deletePart(catId, partId) {
+  const cat = state.categories.find(c => c.id === catId);
+  if (!cat) return;
+  cat.parts = cat.parts.filter(p => p.id !== partId);
+  save();
+  render();
+  updateStats();
+}
+
+function addCustomPart(catId) {
+  const cat = state.categories.find(c => c.id === catId);
+  if (!cat) return;
+  const newPart = { id: genId(), name: '', cost: '', url: '', purchased: false, optional: false };
+  cat.parts.push(newPart);
+  save();
+  render();
+  setTimeout(() => {
+    const inputs = document.querySelectorAll(`.cat-body[data-cid="${catId}"] .part-name-input`);
+    if (inputs.length) inputs[inputs.length - 1].focus();
+  }, 40);
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  const container = document.getElementById('categoriesContainer');
+  container.innerHTML = '';
+
+  state.categories.forEach(cat => {
+    const block = document.createElement('div');
+    block.className = 'category-block';
+
+    const purchased = cat.parts.filter(p => p.purchased).length;
+    const total = cat.parts.length;
+    const cost = cat.parts.reduce((s, p) => s + (parseFloat(p.cost) || 0), 0);
+
+    block.innerHTML = `
+      <div class="cat-header" onclick="toggleCat(${cat.id})">
+        <span class="cat-title">${esc(cat.name)}</span>
+        <span class="cat-meta">
+          <span>${purchased}/${total} purchased</span>
+          ${cost > 0 ? `<span>$${cost.toFixed(2)}</span>` : ''}
+          <span class="cat-toggle ${cat.collapsed ? '' : 'open'}">▼</span>
+        </span>
+      </div>
+      <div class="cat-body ${cat.collapsed ? 'collapsed' : ''}" data-cid="${cat.id}">
+        <div class="col-headers">
+          <span>Part Name</span><span>Cost</span><span>Website</span>
+          <span style="text-align:center">OPT</span>
+          <span style="text-align:center">Got it</span>
+          <span></span>
+        </div>
+        ${cat.parts.map(p => renderPartRow(cat.id, p)).join('')}
+        <button class="add-custom-btn" onclick="addCustomPart(${cat.id})">+ Add Custom Part</button>
+      </div>
+    `;
+
+    container.appendChild(block);
+  });
+}
+
+function renderPartRow(catId, p) {
+  return `
+    <div class="part-row ${p.purchased ? 'purchased' : ''} ${p.optional ? 'optional' : ''}" data-pid="${p.id}">
+      <input class="part-name-input" type="text" placeholder="Part name" value="${esc(p.name)}"
+        oninput="updatePart(${catId},${p.id},'name',this.value)" />
+      <div class="cost-wrap">
+        <span class="prefix">$</span>
+        <input type="number" min="0" step="0.01" placeholder="0.00" value="${esc(p.cost)}"
+          oninput="updatePart(${catId},${p.id},'cost',this.value)" />
+      </div>
+      <div class="url-cell">
+        <input type="url" placeholder="https://..." value="${esc(p.url)}"
+          oninput="updatePart(${catId},${p.id},'url',this.value)" />
+        ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener" class="link-btn">↗</a>` : '<span style="width:16px"></span>'}
+      </div>
+      <span class="optional-badge ${p.optional ? '' : 'req'}">${p.optional ? 'OPT' : ''}</span>
+      <div class="check-wrap">
+        <input type="checkbox" id="chk${p.id}" ${p.purchased ? 'checked' : ''}
+          onchange="updatePart(${catId},${p.id},'purchased',this.checked)" />
+        <label for="chk${p.id}"></label>
+      </div>
+      <button class="del-btn" onclick="deletePart(${catId},${p.id})" title="Remove">✕</button>
+    </div>
+  `;
+}
+
+// ── STATS ────────────────────────────────────────────────────────────────────
+function updateStats() {
+  let total = 0, spent = 0, purchased = 0, partCount = 0;
+  state.categories.forEach(cat => {
+    cat.parts.forEach(p => {
       const c = parseFloat(p.cost) || 0;
-      total += c;
+      total += c; partCount++;
       if (p.purchased) { spent += c; purchased++; }
     });
-    const remain = total - spent;
-    document.getElementById('totalCost').textContent = fmt(total);
-    document.getElementById('spentCost').textContent = fmt(spent);
-    document.getElementById('remainCost').textContent = fmt(remain);
-    document.getElementById('partsCount').textContent = parts.length;
-    document.getElementById('purchasedCount').textContent = purchased;
-  }
-
-  function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-  function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
-
-  // ── AUTOSAVE META FIELDS ───────────────────────────────
-  ['buildName','caliber','buildNotes'].forEach(id => {
-    document.getElementById(id).addEventListener('input', save);
   });
+  document.getElementById('totalCost').textContent = fmt(total);
+  document.getElementById('spentCost').textContent = fmt(spent);
+  document.getElementById('remainCost').textContent = fmt(total - spent);
+  document.getElementById('partsCount').textContent = partCount;
+  document.getElementById('purchasedCount').textContent = purchased;
+}
 
-  // ── INIT ───────────────────────────────────────────────
-  load();
+function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+['buildName','caliber','buildNotes'].forEach(id => {
+  document.getElementById(id).addEventListener('input', save);
+});
+
+load();
 </script>
 </body>
 </html>
