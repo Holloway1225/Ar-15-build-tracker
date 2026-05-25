@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AR-15 Build Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Share+Tech+Mono&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0d0f0e;
+    --surface: #141815;
+    --surface2: #1c211d;
+    --border: #2a312b;
+    --accent: #c8f060;
+    --accent-dim: #8aaa30;
+    --danger: #ff4444;
+    --text: #e8ede9;
+    --text-dim: #7a8a7b;
+    --purchased: #1e2e1f;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(180deg, #0a0c0b 0%, var(--bg) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 28px 24px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 40px,
+      rgba(200,240,96,0.03) 40px,
+      rgba(200,240,96,0.03) 41px
+    );
+    pointer-events: none;
+  }
+  .header-inner { position: relative; max-width: 860px; margin: 0 auto; }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(2.2rem, 8vw, 3.8rem);
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    line-height: 1;
+    text-shadow: 0 0 40px rgba(200,240,96,0.25);
+  }
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--text-dim);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ── MAIN ── */
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px; }
+
+  /* ── BUILD META ── */
+  .build-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  @media (max-width: 500px) { .build-meta { grid-template-columns: 1fr; } }
+
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  input[type="text"], input[type="url"], input[type="number"], select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+  }
+  input:focus, select:focus { border-color: var(--accent-dim); }
+  input::placeholder { color: var(--text-dim); }
+
+  /* ── SECTION HEADER ── */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 0.08em;
+    color: var(--text);
+  }
+
+  /* ── STATS BAR ── */
+  .stats-bar {
+    display: flex;
+    gap: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .stat { display: flex; flex-direction: column; gap: 2px; }
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--text-dim);
+    text-transform: uppercase;
+  }
+  .stat-value {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1rem;
+    color: var(--accent);
+  }
+  .stat-value.dim { color: var(--text-dim); }
+
+  /* ── PARTS TABLE ── */
+  .parts-list { display: flex; flex-direction: column; gap: 8px; }
+
+  .part-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr auto auto;
+    gap: 10px;
+    align-items: center;
+    transition: background 0.2s, border-color 0.2s;
+    animation: fadeIn 0.2s ease;
+  }
+  .part-row.purchased {
+    background: var(--purchased);
+    border-color: var(--accent-dim);
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+
+  .part-row input[type="text"],
+  .part-row input[type="url"],
+  .part-row input[type="number"] {
+    background: var(--surface2);
+    font-size: 0.82rem;
+    padding: 8px 10px;
+  }
+  .part-row.purchased input {
+    background: #1a2a1b;
+    border-color: #3a5a3b;
+  }
+
+  .cost-input { max-width: 100px; }
+
+  /* cost prefix wrapper */
+  .cost-wrap { position: relative; }
+  .cost-wrap .prefix {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-dim);
+    font-size: 0.82rem;
+    pointer-events: none;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .cost-wrap input { padding-left: 22px !important; }
+
+  /* purchased checkbox */
+  .check-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .check-wrap input[type="checkbox"] { display: none; }
+  .check-wrap label {
+    width: 28px;
+    height: 28px;
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+    font-size: 0; /* hide text */
+  }
+  .check-wrap input[type="checkbox"]:checked + label {
+    border-color: var(--accent);
+    background: var(--accent);
+  }
+  .check-wrap input[type="checkbox"]:checked + label::after {
+    content: '✓';
+    color: #0d0f0e;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  /* delete btn */
+  .del-btn {
+    background: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 1rem;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .del-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* link icon */
+  .link-btn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 0;
+    transition: color 0.15s;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+  }
+  .link-btn:hover { color: var(--accent); }
+
+  @media (max-width: 620px) {
+    .part-row {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto auto auto;
+    }
+    .part-row .name-field { grid-column: 1 / -1; }
+    .part-row .url-wrap { grid-column: 1 / -1; display: flex; gap: 8px; align-items: center; }
+    .part-row .url-wrap input { flex: 1; }
+  }
+
+  /* ── ADD BUTTON ── */
+  .add-btn {
+    width: 100%;
+    margin-top: 10px;
+    background: none;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    color: var(--text-dim);
+    cursor: pointer;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    padding: 13px;
+    text-transform: uppercase;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .add-btn:hover { border-color: var(--accent-dim); color: var(--accent); }
+
+  /* ── NOTES ── */
+  .notes-area {
+    margin-top: 28px;
+  }
+  textarea {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    outline: none;
+    padding: 12px 14px;
+    resize: vertical;
+    transition: border-color 0.15s;
+    width: 100%;
+    min-height: 90px;
+  }
+  textarea:focus { border-color: var(--accent-dim); }
+  textarea::placeholder { color: var(--text-dim); }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-dim);
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+  }
+
+  /* ── COL HEADERS ── */
+  .col-headers {
+    display: grid;
+    grid-template-columns: 2fr 1fr 2fr auto auto;
+    gap: 10px;
+    padding: 0 14px;
+    margin-bottom: 6px;
+  }
+  .col-headers span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+  }
+  @media (max-width: 620px) { .col-headers { display: none; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>AR-15 Build Tracker</h1>
+    <div class="subtitle">// Part-by-part build planner</div>
+  </div>
+</header>
+
+<main>
+
+  <!-- BUILD META -->
+  <div class="build-meta">
+    <div class="field-group">
+      <label for="buildName">Build Name</label>
+      <input type="text" id="buildName" placeholder="e.g. Home Defense Build" />
+    </div>
+    <div class="field-group">
+      <label for="caliber">Caliber</label>
+      <input type="text" id="caliber" placeholder="e.g. 5.56 NATO, .300 BLK" />
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-label">Total Cost</span>
+      <span class="stat-value" id="totalCost">$0.00</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Spent</span>
+      <span class="stat-value" id="spentCost">$0.00</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Remaining</span>
+      <span class="stat-value dim" id="remainCost">$0.00</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Parts</span>
+      <span class="stat-value" id="partsCount">0</span>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Purchased</span>
+      <span class="stat-value" id="purchasedCount">0</span>
+    </div>
+  </div>
+
+  <!-- PARTS LIST -->
+  <div class="section-header">
+    <span class="section-title">Parts List</span>
+  </div>
+
+  <div class="col-headers">
+    <span>Part Name</span>
+    <span>Cost</span>
+    <span>Website / Source</span>
+    <span style="text-align:center">Got it</span>
+    <span></span>
+  </div>
+
+  <div class="parts-list" id="partsList"></div>
+
+  <button class="add-btn" onclick="addPart()">+ Add Part</button>
+
+  <!-- NOTES -->
+  <div class="notes-area">
+    <div class="section-header" style="margin-bottom:8px;">
+      <span class="section-title">Notes</span>
+    </div>
+    <textarea id="buildNotes" placeholder="Build notes, specs, FFL info, etc..."></textarea>
+  </div>
+
+</main>
+
+<script>
+  // ── STATE ──────────────────────────────────────────────
+  let parts = [];
+  let nextId = 1;
+
+  // ── LOAD FROM LOCALSTORAGE ─────────────────────────────
+  function load() {
+    try {
+      const saved = localStorage.getItem('ar15_build');
+      if (saved) {
+        const data = JSON.parse(saved);
+        document.getElementById('buildName').value = data.buildName || '';
+        document.getElementById('caliber').value = data.caliber || '';
+        document.getElementById('buildNotes').value = data.notes || '';
+        parts = data.parts || [];
+        nextId = data.nextId || 1;
+      }
+    } catch(e) {}
+    renderAll();
+  }
+
+  // ── SAVE TO LOCALSTORAGE ───────────────────────────────
+  function save() {
+    const data = {
+      buildName: document.getElementById('buildName').value,
+      caliber: document.getElementById('caliber').value,
+      notes: document.getElementById('buildNotes').value,
+      parts,
+      nextId
+    };
+    localStorage.setItem('ar15_build', JSON.stringify(data));
+  }
+
+  // ── ADD PART ───────────────────────────────────────────
+  function addPart() {
+    parts.push({ id: nextId++, name: '', cost: '', url: '', purchased: false });
+    renderAll();
+    save();
+    // focus the new name field
+    setTimeout(() => {
+      const rows = document.querySelectorAll('.part-name-input');
+      if (rows.length) rows[rows.length - 1].focus();
+    }, 50);
+  }
+
+  // ── DELETE PART ────────────────────────────────────────
+  function deletePart(id) {
+    parts = parts.filter(p => p.id !== id);
+    renderAll();
+    save();
+  }
+
+  // ── UPDATE PART ────────────────────────────────────────
+  function updatePart(id, field, value) {
+    const p = parts.find(p => p.id === id);
+    if (p) p[field] = value;
+    if (field === 'purchased') renderAll(); // re-render for row class
+    updateStats();
+    save();
+  }
+
+  // ── RENDER ALL ─────────────────────────────────────────
+  function renderAll() {
+    const list = document.getElementById('partsList');
+    list.innerHTML = '';
+
+    if (parts.length === 0) {
+      list.innerHTML = '<div class="empty-state">No parts yet. Hit "+ Add Part" to start your build.</div>';
+      updateStats();
+      return;
+    }
+
+    parts.forEach(p => {
+      const row = document.createElement('div');
+      row.className = 'part-row' + (p.purchased ? ' purchased' : '');
+      row.dataset.id = p.id;
+
+      row.innerHTML = `
+        <input class="part-name-input" type="text" placeholder="Part name (e.g. Lower Receiver)" value="${esc(p.name)}"
+          onchange="updatePart(${p.id},'name',this.value)" oninput="updatePart(${p.id},'name',this.value)" />
+
+        <div class="cost-wrap">
+          <span class="prefix">$</span>
+          <input type="number" min="0" step="0.01" placeholder="0.00" value="${esc(p.cost)}"
+            onchange="updatePart(${p.id},'cost',this.value)" oninput="updatePart(${p.id},'cost',this.value)" />
+        </div>
+
+        <div class="url-wrap" style="display:flex;gap:8px;align-items:center;">
+          <input type="url" placeholder="https://..." value="${esc(p.url)}"
+            onchange="updatePart(${p.id},'url',this.value)" oninput="updatePart(${p.id},'url',this.value)"
+            style="flex:1;" />
+          ${p.url ? `<a href="${esc(p.url)}" target="_blank" rel="noopener" class="link-btn" title="Open link">↗</a>` : '<span style="width:20px"></span>'}
+        </div>
+
+        <div class="check-wrap">
+          <input type="checkbox" id="chk${p.id}" ${p.purchased ? 'checked' : ''}
+            onchange="updatePart(${p.id},'purchased',this.checked)" />
+          <label for="chk${p.id}"></label>
+        </div>
+
+        <button class="del-btn" onclick="deletePart(${p.id})" title="Remove part">✕</button>
+      `;
+
+      list.appendChild(row);
+    });
+
+    updateStats();
+  }
+
+  // ── STATS ──────────────────────────────────────────────
+  function updateStats() {
+    let total = 0, spent = 0, purchased = 0;
+    parts.forEach(p => {
+      const c = parseFloat(p.cost) || 0;
+      total += c;
+      if (p.purchased) { spent += c; purchased++; }
+    });
+    const remain = total - spent;
+    document.getElementById('totalCost').textContent = fmt(total);
+    document.getElementById('spentCost').textContent = fmt(spent);
+    document.getElementById('remainCost').textContent = fmt(remain);
+    document.getElementById('partsCount').textContent = parts.length;
+    document.getElementById('purchasedCount').textContent = purchased;
+  }
+
+  function fmt(n) { return '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
+  function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+
+  // ── AUTOSAVE META FIELDS ───────────────────────────────
+  ['buildName','caliber','buildNotes'].forEach(id => {
+    document.getElementById(id).addEventListener('input', save);
+  });
+
+  // ── INIT ───────────────────────────────────────────────
+  load();
+</script>
+</body>
+</html>
