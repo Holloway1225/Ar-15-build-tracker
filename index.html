@@ -169,6 +169,45 @@
   textarea { background: var(--surface2); border: 1px solid var(--border); border-radius: 4px; color: var(--text); font-family: 'Inter', sans-serif; font-size: 0.85rem; line-height: 1.6; outline: none; padding: 12px 14px; resize: vertical; transition: border-color 0.15s; width: 100%; min-height: 90px; }
   textarea:focus { border-color: var(--accent-dim); }
   textarea::placeholder { color: var(--text-dim); }
+
+  .report-btn {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    width: 100%; margin-top: 24px;
+    background: none; border: 1px solid var(--accent-dim); border-radius: 6px;
+    color: var(--accent); cursor: pointer;
+    font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
+    letter-spacing: 0.18em; padding: 13px; text-transform: uppercase;
+    transition: background 0.15s, color 0.15s;
+  }
+  .report-btn:hover, .report-btn:active { background: var(--accent); color: #0d0f0e; }
+
+  .report-modal {
+    display: none; position: fixed; inset: 0; z-index: 100;
+    background: rgba(0,0,0,0.75); align-items: flex-end; justify-content: center;
+  }
+  .report-modal.open { display: flex; }
+  .report-sheet {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px 12px 0 0; width: 100%; max-width: 920px;
+    padding: 20px 16px 36px; max-height: 80vh; display: flex; flex-direction: column; gap: 12px;
+  }
+  .report-top { display: flex; align-items: center; justify-content: space-between; }
+  .report-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--accent); }
+  .report-close { background: none; border: none; color: var(--text-dim); cursor: pointer; font-size: 1.2rem; padding: 4px 8px; }
+  .report-close:hover { color: var(--text); }
+  .report-textarea {
+    flex: 1; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px;
+    color: var(--text); font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
+    line-height: 1.7; outline: none; padding: 14px; resize: none; overflow-y: auto;
+    min-height: 200px;
+  }
+  .report-copy-btn {
+    background: var(--accent); border: none; border-radius: 6px; color: #0d0f0e;
+    cursor: pointer; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem;
+    font-weight: 700; letter-spacing: 0.18em; padding: 13px; text-transform: uppercase;
+    transition: opacity 0.15s; width: 100%;
+  }
+  .report-copy-btn:active { opacity: 0.8; }
 </style>
 </head>
 <body>
@@ -206,7 +245,21 @@
     <textarea id="buildNotes" placeholder="Build notes, specs, FFL info, ammo preferences, etc..."></textarea>
   </div>
 
+  <button class="report-btn" onclick="openReport()">&#128203; Generate Parts Report</button>
+
 </main>
+
+<!-- REPORT MODAL -->
+<div class="report-modal" id="reportModal" onclick="closeReportOnBg(event)">
+  <div class="report-sheet">
+    <div class="report-top">
+      <span class="report-title">Parts Report</span>
+      <button class="report-close" onclick="closeReport()">&#x2715;</button>
+    </div>
+    <textarea class="report-textarea" id="reportText" readonly></textarea>
+    <button class="report-copy-btn" id="reportCopyBtn" onclick="copyReport()">Copy to Clipboard</button>
+  </div>
+</div>
 
 <script>
 // ── DEFAULT PARTS TEMPLATE ──────────────────────────────────────────────────
@@ -484,6 +537,76 @@ function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').re
 });
 
 load();
+
+// ── REPORT ───────────────────────────────────────────────────────────────────
+function openReport() {
+  const buildName = document.getElementById('buildName').value.trim();
+  const caliber = document.getElementById('caliber').value.trim();
+  const lines = [];
+
+  if (buildName || caliber) {
+    lines.push('BUILD: ' + (buildName || 'Unnamed') + (caliber ? '  |  CALIBER: ' + caliber : ''));
+    lines.push('-'.repeat(50));
+  }
+
+  let totalCost = 0;
+  let partCount = 0;
+
+  state.categories.forEach(cat => {
+    const catParts = cat.parts.filter(p => p.name.trim() && p.url.trim());
+    if (catParts.length === 0) return;
+
+    lines.push('');
+    lines.push('[ ' + cat.name.toUpperCase() + ' ]');
+
+    catParts.forEach(p => {
+      const cost = p.cost ? '$' + parseFloat(p.cost).toFixed(2) : 'No price';
+      const status = p.purchased ? '[BOUGHT]' : '[NEEDED]';
+      lines.push(status + ' ' + p.name);
+      lines.push('  ' + cost + '  --  ' + p.url);
+      if (p.cost) totalCost += parseFloat(p.cost);
+      partCount++;
+    });
+  });
+
+  if (partCount === 0) {
+    document.getElementById('reportText').value = 'No parts with links yet.\nAdd a website URL to a part and it will appear here.';
+  } else {
+    lines.push('');
+    lines.push('-'.repeat(50));
+    lines.push(partCount + ' part' + (partCount !== 1 ? 's' : '') + ' with links  |  Total: $' + totalCost.toFixed(2));
+    document.getElementById('reportText').value = lines.join('\n');
+  }
+
+  document.getElementById('reportCopyBtn').textContent = 'Copy to Clipboard';
+  document.getElementById('reportModal').classList.add('open');
+}
+
+function closeReport() {
+  document.getElementById('reportModal').classList.remove('open');
+}
+
+function closeReportOnBg(e) {
+  if (e.target === document.getElementById('reportModal')) closeReport();
+}
+
+function copyReport() {
+  const text = document.getElementById('reportText').value;
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => {
+      const btn = document.getElementById('reportCopyBtn');
+      btn.textContent = 'Copied!';
+      setTimeout(() => { btn.textContent = 'Copy to Clipboard'; }, 2000);
+    });
+  } else {
+    const ta = document.getElementById('reportText');
+    ta.select();
+    document.execCommand('copy');
+    const btn = document.getElementById('reportCopyBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy to Clipboard'; }, 2000);
+  }
+}
 </script>
 </body>
 </html>
